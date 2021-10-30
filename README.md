@@ -19,7 +19,11 @@ No modules.
 | [google_compute_backend_bucket.backend_website](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_backend_bucket) | resource |
 | [google_compute_global_address.global_address](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_address) | resource |
 | [google_compute_global_forwarding_rule.default_frontend](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
+| [google_compute_global_forwarding_rule.default_https_frontend](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_global_forwarding_rule) | resource |
+| [google_compute_managed_ssl_certificate.certificate](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_managed_ssl_certificate) | resource |
+| [google_compute_ssl_policy.modern-ssl-policy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_ssl_policy) | resource |
 | [google_compute_target_http_proxy.http_proxy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_http_proxy) | resource |
+| [google_compute_target_https_proxy.https_proxy](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_target_https_proxy) | resource |
 | [google_compute_url_map.loadbalancer](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/compute_url_map) | resource |
 | [google_storage_bucket.log_bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
 | [google_storage_bucket.website_bucket](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/storage_bucket) | resource |
@@ -31,6 +35,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_cors"></a> [cors](#input\_cors) | Define cors permissions | <pre>list(object({<br>    max_age_seconds = number<br>    methods         = list(string),<br>    origins         = list(string),<br>    response_header = list(string)<br>    })<br>  )</pre> | `[]` | no |
 | <a name="input_create_log_bucket"></a> [create\_log\_bucket](#input\_create\_log\_bucket) | n/a | `bool` | `false` | no |
+| <a name="input_enable_https"></a> [enable\_https](#input\_enable\_https) | Enable HTTPS access to the static website, if yes, a GCP certificate will be generated | `bool` | `false` | no |
 | <a name="input_force_destroy"></a> [force\_destroy](#input\_force\_destroy) | Allow to delete all files before deleting the bucket | `bool` | `true` | no |
 | <a name="input_labels"></a> [labels](#input\_labels) | Labels to add to each resource deployed | `map(string)` | `{}` | no |
 | <a name="input_location"></a> [location](#input\_location) | Bucket location | `string` | `"US"` | no |
@@ -44,4 +49,8 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_log_bucket_name"></a> [log\_bucket\_name](#output\_log\_bucket\_name) | Log bucket name |
+| <a name="output_public_ip"></a> [public\_ip](#output\_public\_ip) | Public IP of the global address |
+| <a name="output_website_bucket_name"></a> [website\_bucket\_name](#output\_website\_bucket\_name) | Website bucket name |

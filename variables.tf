@@ -77,3 +77,9 @@ variable "website_default_public" {
   description = "Set to true to set the website bucket as public"
   default     = false
 }
+
+variable "enable_https" {
+  type        = bool
+  description = "Enable HTTPS access to the static website, if yes, a GCP certificate will be generated"
+  default     = false
+}

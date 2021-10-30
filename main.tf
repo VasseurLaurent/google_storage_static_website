@@ -73,15 +73,22 @@ resource "google_compute_backend_bucket" "backend_website" {
 
 resource "google_compute_url_map" "loadbalancer" {
   name            = replace("${var.website_url}-urlmap", ".", "-")
-  default_service = google_compute_backend_bucket.backend_website.self_link
+  default_service = var.enable_https == true ? null : google_compute_backend_bucket.backend_website.self_link
   host_rule {
     hosts        = [var.website_url]
     path_matcher = "defaultbackend"
   }
-
   path_matcher {
     name            = "defaultbackend"
     default_service = google_compute_backend_bucket.backend_website.id
+  }
+
+  dynamic "default_url_redirect" {
+    for_each = var.enable_https == true ? [1] : []
+    content {
+      https_redirect = true
+      strip_query    = false
+    }
   }
 }
 
@@ -97,4 +104,38 @@ resource "google_compute_global_forwarding_rule" "default_frontend" {
   ip_protocol           = "TCP"
   port_range            = "80"
   target                = google_compute_target_http_proxy.http_proxy.self_link
+}
+
+resource "google_compute_managed_ssl_certificate" "certificate" {
+  count = var.enable_https == true ? 1 : 0
+  name  = replace("${var.website_url}-certificate", ".", "-")
+  managed {
+    domains = [var.website_url]
+  }
+}
+
+resource "google_compute_ssl_policy" "modern-ssl-policy" {
+  count           = var.enable_https == true ? 1 : 0
+  name            = replace("${var.website_url}-tlspolicy", ".", "-")
+  profile         = "MODERN"
+  min_tls_version = "TLS_1_2"
+}
+
+resource "google_compute_target_https_proxy" "https_proxy" {
+  count            = var.enable_https == true ? 1 : 0
+  name             = replace("${var.website_url}-httpsfrontend", ".", "-")
+  url_map          = google_compute_url_map.loadbalancer.self_link
+  ssl_certificates = [google_compute_managed_ssl_certificate.certificate[0].self_link]
+  ssl_policy       = google_compute_ssl_policy.modern-ssl-policy[0].id
+}
+
+resource "google_compute_global_forwarding_rule" "default_https_frontend" {
+  count                 = var.enable_https == true ? 1 : 0
+  name                  = replace("${var.website_url}-defaulthttpsfrontend", ".", "-")
+  load_balancing_scheme = "EXTERNAL"
+  ip_address            = google_compute_global_address.global_address.address
+  ip_protocol           = "TCP"
+  port_range            = "443"
+  target                = google_compute_target_https_proxy.https_proxy[0].self_link
+
 }
