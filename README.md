@@ -1,12 +1,15 @@
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >=1.0.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | >=3.90.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | n/a |
+| <a name="provider_google"></a> [google](#provider\_google) | >=3.90.0 |
 
 ## Modules
 
@@ -55,5 +58,6 @@ No modules.
 | Name | Description |
 |------|-------------|
 | <a name="output_log_bucket_name"></a> [log\_bucket\_name](#output\_log\_bucket\_name) | Log bucket name |
+| <a name="output_map_url_id"></a> [map\_url\_id](#output\_map\_url\_id) | n/a |
 | <a name="output_public_ip"></a> [public\_ip](#output\_public\_ip) | Public IP of the global address |
 | <a name="output_website_bucket_name"></a> [website\_bucket\_name](#output\_website\_bucket\_name) | Website bucket name |

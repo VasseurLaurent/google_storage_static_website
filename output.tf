@@ -12,3 +12,7 @@ output "log_bucket_name" {
   value       = google_storage_bucket.log_bucket[0].name
   description = "Log bucket name"
 }
+
+output "map_url_id" {
+  value = google_compute_url_map.loadbalancer.id
+}
