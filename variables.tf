@@ -83,3 +83,15 @@ variable "enable_https" {
   description = "Enable HTTPS access to the static website, if yes, a GCP certificate will be generated"
   default     = false
 }
+
+variable "create_dns_record" {
+  type        = bool
+  description = "To create a SSL certificate, you need to create a DNS record, with this bool variable it can create the DNS record only if the domain is managed by GCP"
+  default     = false
+}
+
+variable "managed_zone_dns_name" {
+  type        = string
+  description = "if create_dns_record is set to yes, you can specify the name of the zone with this variable"
+  default     = ""
+}

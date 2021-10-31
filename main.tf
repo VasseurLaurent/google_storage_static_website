@@ -31,6 +31,7 @@ resource "google_storage_bucket" "website_bucket" {
   labels = var.labels
 }
 
+# Create a log bucket if needed
 resource "google_storage_bucket" "log_bucket" {
   count                       = var.create_log_bucket ? 1 : 0
   name                        = var.log_bucket == null ? replace("${var.website_url}-logs", ".", "-") : var.log_bucket
@@ -60,6 +61,7 @@ resource "google_storage_default_object_acl" "default_permission" {
   ]
 }
 
+# Setup CDN infrastructure
 resource "google_compute_global_address" "global_address" {
   name = replace("${var.website_url}-globaladdress", ".", "-")
 }
@@ -71,6 +73,7 @@ resource "google_compute_backend_bucket" "backend_website" {
   enable_cdn  = true
 }
 
+# Default service if HTTP, redirect if HTTPS enabled
 resource "google_compute_url_map" "loadbalancer" {
   name            = replace("${var.website_url}-urlmap", ".", "-")
   default_service = var.enable_https == true ? null : google_compute_backend_bucket.backend_website.self_link
@@ -104,8 +107,10 @@ resource "google_compute_global_forwarding_rule" "default_frontend" {
   ip_protocol           = "TCP"
   port_range            = "80"
   target                = google_compute_target_http_proxy.http_proxy.self_link
+  labels                = var.labels
 }
 
+# Setup HTTPS frontend
 resource "google_compute_managed_ssl_certificate" "certificate" {
   count = var.enable_https == true ? 1 : 0
   name  = replace("${var.website_url}-certificate", ".", "-")
@@ -137,5 +142,14 @@ resource "google_compute_global_forwarding_rule" "default_https_frontend" {
   ip_protocol           = "TCP"
   port_range            = "443"
   target                = google_compute_target_https_proxy.https_proxy[0].self_link
+  labels                = var.labels
+}
 
+resource "google_dns_record_set" "dns_record" {
+  count        = var.create_dns_record == true && var.managed_zone_dns_name != "" ? 1 : 0
+  name         = var.website_url
+  type         = "A"
+  ttl          = 300
+  managed_zone = var.managed_zone_dns_name
+  rrdatas      = [google_compute_global_address.global_address.address]
 }
