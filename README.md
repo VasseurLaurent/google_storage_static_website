@@ -1,3 +1,9 @@
+# Description
+
+This module deploys a google\_storage bucket to host a static website. Moreover, it also deploy the necessary front-end to deliver the content through CDN.
+You can configure a HTTP or HTTPS protocol.
+If needed, you can also automatically create a log bucket to retrieve all logs from the website.
+
 ## Requirements
 
 | Name | Version |
